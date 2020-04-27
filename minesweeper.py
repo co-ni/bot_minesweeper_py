@@ -1,17 +1,13 @@
 from python_imagesearch.imagesearch import imagesearch, region_grabber, imagesearcharea
 import pyautogui
-import time
 from PIL import ImageGrab
-import os
 from os import walk
-
-banXY = []
 
 for (dirpath, dirnames, i) in walk("./assets/"):
     filenames = i
     break
 
-assets = ["./assets/div/windowslogo.png", "./assets/mystery.png", "./assets/1.png"]
+assets = ["./assets/div/windowslogo.png", "./assets/mystery.png", "./assets/div/map.png","./assets/1.png"]
 
 class caseCoord:
   def __init__(self, name, x, y):
@@ -20,7 +16,7 @@ class caseCoord:
     self.x = x
 
 def getCornerLeft():
-    map = imagesearch("./assets/div/map.png")
+    map = imagesearch(assets[1])
     if map[0] != -1:
         return map[0], map[1]
     else:
@@ -39,13 +35,18 @@ def oneClickRight(loop):
 def judgment(caseAround):
     countMine = 0
     dunno = []
+    empty = 0
+    countMystery = 0
     doSomething = False
     for i in caseAround:
         if i.name == "mystery":
+            countMystery = countMystery + 1
             dunno.append(i)
+        if i.name == "empty":
+            empty = empty + 1
         elif i.name == "mine":
             countMine = countMine + 1
-    if caseAround[4].name != "empty" or caseAround[4].name != "mystery":
+    if empty < 9 and countMystery < 9:
         if caseAround[4].name == str(len(dunno)+countMine):
             for i in dunno:
                 pyautogui.moveTo(i.x, i.y)
@@ -58,7 +59,7 @@ def judgment(caseAround):
                 doSomething = True
     else:
         return False
-    
+
     return doSomething
 
 def fullScreen():
@@ -69,6 +70,7 @@ def fullScreen():
         pyautogui.keyDown('up')
         pyautogui.keyUp('win')
         pyautogui.keyUp('up')
+        return True
     else:
         return False
 
@@ -101,7 +103,7 @@ def scanAround(x,y):
     return caseAround
 
 def searchOne():
-    oneCase = imagesearch(assets[2])
+    oneCase = imagesearch(assets[3])
     if oneCase[0] != -1:
         return oneCase[0], oneCase[1] 
     else:
@@ -125,6 +127,3 @@ def extraScan(x,y):
             x = x - 325
             y = y + 65
     return isMystery
-
-
-# def browseSquare(x, y):
